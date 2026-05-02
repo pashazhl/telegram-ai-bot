@@ -346,7 +346,7 @@ bot.on('photo', async (ctx) => {
         })
 
         const reply = response.choices[0].message.content
-        ctx.reply(reply, { ...mainMenu, parse_mode: 'Markdown' })
+        ctx.reply(reply, mainMenu)
     } catch (error) {
         console.error(error)
         ctx.reply('Не удалось проанализировать фото, попробуй ещё раз!', mainMenu)
