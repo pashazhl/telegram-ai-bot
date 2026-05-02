@@ -316,5 +316,42 @@ cron.schedule('30 6 * * *', async () => {
     timezone: 'Europe/Minsk'
 })
 
+// 🖼 Анализ фото
+bot.on('photo', async (ctx) => {
+    try {
+        await ctx.sendChatAction('typing')
+
+        // Получаем файл фото
+        const photo = ctx.message.photo[ctx.message.photo.length - 1]
+        const fileLink = await ctx.telegram.getFileLink(photo.file_id)
+        const imageUrl = fileLink.href
+
+        const response = await client.chat.completions.create({
+            model: 'google/gemma-4-26b-a4b-it:free',
+            messages: [
+                {
+                    role: 'user',
+                    content: [
+                        {
+                            type: 'image_url',
+                            image_url: { url: imageUrl }
+                        },
+                        {
+                            type: 'text',
+                            text: 'Опиши подробно что ты видишь на этом изображении. Отвечай на русском языке.'
+                        }
+                    ]
+                }
+            ]
+        })
+
+        const reply = response.choices[0].message.content
+        ctx.reply(reply, { ...mainMenu, parse_mode: 'Markdown' })
+    } catch (error) {
+        console.error(error)
+        ctx.reply('Не удалось проанализировать фото, попробуй ещё раз!', mainMenu)
+    }
+})
+
 bot.launch()
 console.log('Бот запущен!')
