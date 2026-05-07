@@ -11,9 +11,11 @@ const notes = require('./handlers/notes')
 const reminders = require('./handlers/reminders')
 const photo = require('./handlers/photo')
 const voice = require('./handlers/voice')
+const flashcards = require('./handlers/flashcards')
 const textRouter = require('./handlers/text')
 
 const morningWeather = require('./jobs/morningWeather')
+const cardsReminder = require('./jobs/cardsReminder')
 const reminderQueue = require('./services/reminderQueue')
 const store = require('./storage')
 const { buildWhitelistMiddleware } = require('./middleware/whitelist')
@@ -56,6 +58,7 @@ function buildBot() {
     reminders.register(bot)
     photo.register(bot)
     voice.register(bot)
+    flashcards.register(bot)
 
     // text-роутер ставится последним — он ловит всё, что не матчится по hears.
     textRouter.register(bot)
@@ -65,6 +68,7 @@ function buildBot() {
 
 function startBackgroundJobs(bot) {
     morningWeather.schedule(bot)
+    cardsReminder.schedule(bot)
     reminderQueue.restoreAll(bot)
     webHandle = webServer.start()
 }

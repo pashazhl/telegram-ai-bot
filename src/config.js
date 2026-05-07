@@ -43,4 +43,6 @@ module.exports = {
     voiceMaxBytes: Number(process.env.VOICE_MAX_BYTES || 5 * 1024 * 1024),
     // Веб-панель: если adminToken не задан, веб-сервер не запускается.
     adminToken: process.env.ADMIN_TOKEN || null,
+    // Утренний пинг по карточкам (cron-выражение). По умолчанию 9:00.
+    cardsCron: process.env.CARDS_CRON || '0 9 * * *',
 }

@@ -10,6 +10,7 @@ const notes = require('../db/repositories/notes')
 const roles = require('../db/repositories/roles')
 const reminders = require('../db/repositories/reminders')
 const users = require('../db/repositories/users')
+const flashcards = require('../db/repositories/flashcards')
 
 module.exports = {
     // histories
@@ -39,4 +40,15 @@ module.exports = {
     // users
     touchUser: (userId, info) => users.touchUser(userId, info),
     listUsers: () => users.listUsers(),
+
+    // flashcards
+    createFlashcard: (userId, data) => flashcards.create(userId, data),
+    listDueFlashcards: (userId, limit) => flashcards.listDue(userId, limit),
+    dueFlashcardCount: (userId) => flashcards.dueCount(userId),
+    totalFlashcardCount: (userId) => flashcards.totalCount(userId),
+    listAllFlashcards: (userId) => flashcards.listAll(userId),
+    getFlashcard: (userId, id) => flashcards.getOne(userId, id),
+    deleteFlashcard: (userId, id) => flashcards.deleteOne(userId, id),
+    reviewFlashcard: (userId, id, rating) => flashcards.applyReview(userId, id, rating),
+    listUsersWithDueFlashcards: () => flashcards.listUsersWithDue(),
 }

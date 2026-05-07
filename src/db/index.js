@@ -58,6 +58,26 @@ CREATE TABLE IF NOT EXISTS reminders (
 );
 CREATE INDEX IF NOT EXISTS idx_reminders_pending
   ON reminders(delivered_at, trigger_at);
+
+-- Карточки знаний для spaced repetition (алгоритм SM-2).
+-- ease_factor = «лёгкость», стартует с 2.5, регулируется при оценке.
+-- interval_days = сколько дней до следующего повторения.
+-- repetitions = сколько раз подряд ученик отвечал успешно (good/easy).
+CREATE TABLE IF NOT EXISTS flashcards (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id       TEXT NOT NULL,
+  question      TEXT NOT NULL,
+  answer        TEXT NOT NULL,
+  topic         TEXT,
+  ease_factor   REAL NOT NULL DEFAULT 2.5,
+  interval_days REAL NOT NULL DEFAULT 0,
+  repetitions   INTEGER NOT NULL DEFAULT 0,
+  next_review   INTEGER NOT NULL,
+  created_at    INTEGER NOT NULL,
+  updated_at    INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_flashcards_review
+  ON flashcards(user_id, next_review);
 `
 
 db.exec(SCHEMA)

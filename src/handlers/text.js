@@ -1,10 +1,14 @@
 'use strict'
 
 /**
- * Общий text-роутер. Проверяет stateful-обработчики (погода, заметки,
- * напоминания), и если ни один не сработал — пускает в AI-чат.
+ * Общий text-роутер. Проверяет stateful-обработчики (карточки, погода,
+ * заметки, напоминания), и если ни один не сработал — пускает в AI-чат.
+ *
+ * Порядок важен: карточки идут первыми, чтобы reviewing-режим не съедал
+ * AI-чат, и наоборот.
  */
 
+const flashcards = require('./flashcards')
 const weather = require('./weather')
 const notes = require('./notes')
 const reminders = require('./reminders')
@@ -12,6 +16,7 @@ const aiHandler = require('./ai')
 
 function register(bot) {
     bot.on('text', async (ctx) => {
+        if (await flashcards.handleTextIfWaiting(ctx)) return
         if (await weather.handleTextIfWaiting(ctx)) return
         if (notes.handleTextIfWaiting(ctx)) return
         if (reminders.handleTextIfWaiting(ctx, bot)) return

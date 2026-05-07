@@ -25,6 +25,8 @@ function buildRouter() {
                 messages: histories.countUserMessages(u.id),
                 notes: store.getNotesFull(u.id).length,
                 reminders: store.listUserReminders(u.id).length,
+                cards: store.totalFlashcardCount(u.id),
+                cardsDue: store.dueFlashcardCount(u.id),
             })),
         )
     })
@@ -49,6 +51,15 @@ function buildRouter() {
 
     r.delete('/api/users/:id/reminders/:reminderId', (req, res) => {
         const ok = store.deleteReminder(req.params.id, Number(req.params.reminderId))
+        res.json({ ok })
+    })
+
+    r.get('/api/users/:id/flashcards', (req, res) => {
+        res.json(store.listAllFlashcards(req.params.id))
+    })
+
+    r.delete('/api/users/:id/flashcards/:cardId', (req, res) => {
+        const ok = store.deleteFlashcard(req.params.id, Number(req.params.cardId))
         res.json({ ok })
     })
 

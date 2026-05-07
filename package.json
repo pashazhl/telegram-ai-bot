@@ -1,6 +1,6 @@
 {
   "name": "telegram-ai-bot",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Многофункциональный Telegram-бот с AI на Node.js (Telegraf + OpenRouter + SQLite)",
   "main": "index.js",
   "scripts": {

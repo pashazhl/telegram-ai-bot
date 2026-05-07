@@ -52,6 +52,7 @@ main { display:grid; grid-template-columns: 320px 1fr; gap:16px; padding:16px; m
       <button data-tab="history" class="active">История</button>
       <button data-tab="notes">Заметки</button>
       <button data-tab="reminders">Напоминания</button>
+      <button data-tab="cards">Карточки</button>
     </div>
     <div class="tab-content" id="content">
       <div class="empty">Выбери пользователя слева</div>
@@ -102,7 +103,7 @@ async function loadUsers() {
   root.innerHTML = users.map(u => `
     <div class="user" data-id="${u.id}">
       <div class="name">${escapeHtml(u.first_name || u.username || u.id)}</div>
-      <div class="meta">id ${u.id} · ${u.messages} msg · ${u.notes} notes · ${u.reminders} reminders · ${fmtDate(u.last_seen)}</div>
+      <div class="meta">id ${u.id} · ${u.messages} msg · ${u.notes} notes · ${u.reminders} rem · ${u.cards} cards (${u.cardsDue} due) · ${fmtDate(u.last_seen)}</div>
     </div>
   `).join('')
   root.querySelectorAll('.user').forEach(el => {
@@ -160,12 +161,31 @@ async function loadTab() {
         <button onclick="delReminder(${r.id})">Удалить</button>
       </div>
     `).join('')
+  } else if (activeTab === 'cards') {
+    const items = await api(`/api/users/${activeUser}/flashcards`)
+    if (!items?.length) { root.innerHTML = '<div class="empty">Карточек нет</div>'; return }
+    root.innerHTML = items.map(c => `
+      <div class="item">
+        <div class="body">
+          ${c.topic ? `<div class="role-tag">🏷 ${escapeHtml(c.topic)}</div>` : ''}
+          <div><b>${escapeHtml(c.question)}</b></div>
+          <div style="color:#555;margin-top:4px">${escapeHtml(c.answer)}</div>
+          <time>повторений: ${c.repetitions} · следующее: ${fmtDate(c.next_review)}</time>
+        </div>
+        <button onclick="delCard(${c.id})">Удалить</button>
+      </div>
+    `).join('')
   }
 }
 
 window.delNote = async (id) => {
   if (!confirm('Удалить заметку?')) return
   await api(`/api/users/${activeUser}/notes/${id}`, { method: 'DELETE' })
+  loadTab(); loadUsers()
+}
+window.delCard = async (id) => {
+  if (!confirm('Удалить карточку?')) return
+  await api(`/api/users/${activeUser}/flashcards/${id}`, { method: 'DELETE' })
   loadTab(); loadUsers()
 }
 window.delReminder = async (id) => {

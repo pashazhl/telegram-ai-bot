@@ -3,16 +3,22 @@
 const { Markup } = require('telegraf')
 
 const mainMenu = Markup.keyboard([
-    ['🧹 Очистить историю', '📊 Статистика'],
-    ['🎭 Сменить роль', '❓ Помощь'],
+    ['🧑‍🏫 Наставник', '📇 Карточки'],
     ['🌤 Погода', '📝 Заметки'],
-    ['⏰ Напоминание'],
+    ['⏰ Напоминание', '🎭 Другие роли'],
+    ['📊 Статистика', '❓ Помощь'],
+    ['🧹 Очистить историю'],
+]).resize()
+
+const mentorMenu = Markup.keyboard([
+    ['🧑‍🏫 Объясни концепт', '🐛 Разбери проблему'],
+    ['🔍 Сделай ревью', '🎯 Дай задачу'],
+    ['🔙 Назад'],
 ]).resize()
 
 const rolesMenu = Markup.keyboard([
-    ['👨‍💻 Программист', '💪 Тренер'],
-    ['🌍 Переводчик', '✍️ Редактор'],
-    ['🤖 Обычный ассистент'],
+    ['💪 Тренер', '🌍 Переводчик'],
+    ['✍️ Редактор', '🤖 Обычный'],
     ['🔙 Назад'],
 ]).resize()
 
@@ -21,4 +27,21 @@ const notesMenu = Markup.keyboard([
     ['🗑 Удалить заметки', '🔙 Назад'],
 ]).resize()
 
-module.exports = { mainMenu, rolesMenu, notesMenu }
+const cardsMenu = Markup.keyboard([
+    ['🔁 Повторить', '➕ Создать'],
+    ['📊 Статистика карточек', '🔙 Назад'],
+]).resize()
+
+const cardsRatingMenu = Markup.keyboard([
+    ['❌ Снова', '😓 Сложно'],
+    ['👍 Норма', '✨ Легко'],
+]).resize()
+
+module.exports = {
+    mainMenu,
+    mentorMenu,
+    rolesMenu,
+    notesMenu,
+    cardsMenu,
+    cardsRatingMenu,
+}
